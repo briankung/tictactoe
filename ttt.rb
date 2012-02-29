@@ -77,43 +77,44 @@ end
 def computer_action( board )
   # Computer's move
   # Insert some sort of AI wizardry
+  hal( board )
   display( board )
   puts
-  puts "Resistance is futile"
+  puts "Computer: Resistance is futile"
   prompt
   gets
 end
 
 def check_win board
-  three_o = /o{3}/
-  three_x = /x{3}/
+  ooo = /o{3}/
+  xxx = /x{3}/
   
   for index in 0..2
-    if add_row( board, index ) =~ three_x
+    if add_row( board, index ) =~ xxx
       return [true, "The player"]
-    elsif add_row( board, index ) =~ three_o
+    elsif add_row( board, index ) =~ ooo
       return [true, "The computer"]
-    elsif add_col( board, index ) =~ three_x
+    elsif add_col( board, index ) =~ xxx
       return [true, "The player"]
-    elsif add_col( board, index ) =~ three_o
+    elsif add_col( board, index ) =~ ooo
       return [true, "The computer"]
     end
   end
 
-  if add_fwd_diag( board ) =~ three_x
+  if add_fwd_diag( board ) =~ xxx
     return [true, :player]
-  elsif add_fwd_diag( board ) =~ three_o
+  elsif add_fwd_diag( board ) =~ ooo
     return [true, :computer]
-  elsif add_back_diag( board ) =~ three_x
+  elsif add_back_diag( board ) =~ xxx
     return [true, :player]
-  elsif add_back_diag( board ) =~ three_o
+  elsif add_back_diag( board ) =~ ooo
     return [true, :computer]
   else
     return [false, false]
   end
 end
 
-# String concatenations for checking win conditions
+# String concatenations for checking board
 
 def add_row( array, index )
   array[index * 3].to_s + array[index * 3 + 1].to_s + array[index * 3 + 2].to_s
@@ -129,6 +130,40 @@ end
 
 def add_back_diag( array )
   array[2].to_s + array[4].to_s + array[6].to_s
+end
+
+# Computer player logic. We'll call her...HAL.
+
+def hal( board )
+  defend( board )
+  attack( board )
+end
+
+def defend( board )
+  x_x = /x{2}/
+
+  for index in 0..2
+    if add_row( board, index ) =~ xx
+      for col in 0..2
+        offset = index * 3 + col
+        board[offset] = "o" if board[offset] != "x"
+      end
+    elsif add_col( board, index ) =~ xx
+      for row in 0..2
+        offset = index * 3 + row
+        board[offset] = "o" if board[offset] != "x"
+      end
+    elsif add_fwd_diag( board ) =~ xx
+      # Magic
+    end
+    elsif add_back_diag( board ) =~ xx
+      # Fairy magic
+    end
+  end
+end
+
+def attack( board )
+  o_o = /o{2}/
 end
 
 # Yep.
