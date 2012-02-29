@@ -40,7 +40,7 @@ def display( board )
 end
 
 def action( board, turn)
-  until check_win( board )
+  until check_win( board ).first
     if turn == :player
       player_action board
       turn = next_player turn
@@ -51,6 +51,9 @@ def action( board, turn)
       puts "turn variable in action method has fucked up"
     end
   end
+  
+  display board
+  puts "#{check_win(board).last} won!"
 end
 
 def player_action( board )
@@ -63,17 +66,17 @@ def player_action( board )
   selection = gets.chomp.scan(/\A[abc][123]/).first
 
   if selection.nil?
-    puts "Please use the form a1, b2, c3 to choose a coordinate."
-    puts "Press enter to continue:"
-    prompt; gets
+    puts "I didn't understand that. Press enter to try again."
+    gets
     player_action( board )
   else
     board[to_index(selection)] = "x"
-  end    
+  end   
 end
 
 def computer_action( board )
   # Computer's move
+  # Insert some sort of AI wizardry
   display( board )
   puts
   puts "Resistance is futile"
@@ -82,19 +85,31 @@ def computer_action( board )
 end
 
 def check_win board
-  # Checks the board for win conditions.
+  three_o = /o{3}/
+  three_x = /x{3}/
+  
   for index in 0..2
-    if add_row( board, index ) =~ /x{3}|o{3}/
-      return true
-    elsif add_col( board, index ) =~ /x{3}|o{3}/
-      return true
-    elsif add_fwd_diag( board ) =~ /x{3}|o{3}/
-      return true
-    elsif add_back_diag( board ) =~ /x{3}|o{3}/
-      return true
-    else
-      return false
-    end      
+    if add_row( board, index ) =~ three_x
+      return [true, "The player"]
+    elsif add_row( board, index ) =~ three_o
+      return [true, "The computer"]
+    elsif add_col( board, index ) =~ three_x
+      return [true, "The player"]
+    elsif add_col( board, index ) =~ three_o
+      return [true, "The computer"]
+    end
+  end
+
+  if add_fwd_diag( board ) =~ three_x
+    return [true, :player]
+  elsif add_fwd_diag( board ) =~ three_o
+    return [true, :computer]
+  elsif add_back_diag( board ) =~ three_x
+    return [true, :player]
+  elsif add_back_diag( board ) =~ three_o
+    return [true, :computer]
+  else
+    return [false, false]
   end
 end
 

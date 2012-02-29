@@ -20,5 +20,5 @@ Tic Tac Toe is the classic game in command line. This version pits the player ag
 
 Discovered some bugs:
 
-* Win check fails for rows 2 and 3
-* Win check fails for columns B and C
+* [FIXED] Win check fails for rows 2 and 3
+* [FIXED] Win check fails for columns B and C
