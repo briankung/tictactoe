@@ -4,9 +4,9 @@ Tic Tac Toe is the classic game in command line. This version pits the player ag
 
 Directions:
 
-- fire up irb
-- require ttt.rb
-- use command "tictactoe" (without parentheses) to play.
+1. fire up irb
+2. require ttt.rb
+3. use command "ttt" (without parentheses) to play.
 
 **Roadmap**
 
@@ -24,7 +24,22 @@ Directions:
                     Middle
         Win conditions
 
-Discovered some bugs:
+**Old notes to self in ttt.rb***
+
+    # Display a board
+      # Ask who should go first
+        # Set player indicator
+      # Players alternate moves until win conditions met
+        # Human: Ask for input in form a1, b2, c3, etc.
+          # Parse move input
+            # Must be two characters, /([abc][123])/i
+              # Else, throw a hissy fit
+        # Computer
+          # AI chooses a move somehow. Dammit      
+        # After every player move, check win
+          # If win, congratulate or console player
+        
+**Bugs**
 
 * [FIXED] Win check fails for rows 2 and 3
 * [FIXED] Win check fails for columns B and C

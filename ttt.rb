@@ -1,17 +1,8 @@
-# Display a board
-  # Ask who should go first
-    # Set player indicator
-  # Players alternate moves until win conditions met
-    # Human: Ask for input in form a1, b2, c3, etc.
-      # Parse move input
-        # Must be two characters, /([abc][123])/i
-          # Else, throw a hissy fit
-    # Computer
-      # AI chooses a move somehow. Dammit      
-    # After every player move, check win
-      # If win, congratulate or console player
+# Tic Tac Toe implemented in Ruby command line.
+# The game itself is the ttt function. Fire it up and
+# everything should be self explanatory.
 
-def tictactoe
+def ttt
   board = []
   9.times do
     board << "_"
@@ -46,7 +37,7 @@ def action( board, turn)
       turn = next_player turn
     elsif turn == :computer
       computer_action board
-      turn = next_player turn   #God, this is awkward.
+      turn = next_player turn
     else
       puts "turn variable in action method has fucked up"
     end
@@ -142,6 +133,8 @@ end
 def defend( board )
   x_x = /x{2}/
 
+  # AI is a bitch because of all the nested loops
+  
   for index in 0..2
     if add_row( board, index ) =~ x_x
       for col in 0..2
@@ -187,7 +180,7 @@ def attack( board )
   o_o = /o{2}/
 end
 
-# Yep.
+# Bits and pieces.
 
 def first_move
   prompt
