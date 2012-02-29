@@ -21,7 +21,9 @@ def tictactoe
   puts
   puts "Who should go first? Type \"player\" or \"computer\""
   puts "without the quotation marks to make your choice."
-
+  
+  action( board, first_move )
+  
 end
 
 def display( board )
@@ -37,26 +39,49 @@ def display( board )
   end
 end
 
-def player_action
-  # Prompts player for action and marks spot on board
-  puts "Hey hey playa"
+def action( board, turn)
+  while check_win( board ) == false    # This doesn't work because you are dumb
+    if turn == :player
+      player_action board
+      turn = next_player turn
+    elsif turn == :computer
+      computer_action board
+      turn = next_player turn   #God, this is awkward.
+    else
+      puts "turn variable in action method has fucked up"
+    end
+  end
 end
 
-def computer_action
+def player_action( board )
+  # Prompts player for action and marks spot on board
+  display( board )
+  puts "Hey hey playa"
+  gets
+end
+
+def computer_action( board )
   # Computer's move
+  display( board )
   puts "Resistance is futile"
+  gets
 end
 
 def check_win board
   # Checks the board for win conditions.
-  #
   for index in 0..2
-    player_wins if add_row( board, index ) =~ /x{3}/ || add_col( board, index ) =~ /x{3}/
-    computer_wins if add_row( board, index ) =~ /o{3}/ || add_col( board, index ) =~ /o{3}/
+    if add_row( board, index ) =~ /x{3}|o{3}/
+      return true
+    elsif add_col( board, index ) =~ /x{3}|o{3}/
+      return true
+    elsif add_fwd_diag( board ) =~ /x{3}|o{3}/
+      return true
+    elsif add_back_diag( board ) =~ /x{3}|o{3}/
+      return true
+    else
+      return false
+    end      
   end
-  
-  player_wins if add_fwd_diag( board ) =~ /x{3}/ || add_back_diag( board ) =~ /x{3}/
-  computer_wins if add_fwd_diag( board ) =~ /o{3}/ || add_back_diag( board ) =~ /o{3}/
 end
 
 # String concatenations for checking win conditions
@@ -78,20 +103,6 @@ def add_back_diag( array )
 end
 
 # Yep.
-
-def action( board, turn)
-  unless check_win board  # Psuedo-code. Fix later.
-    if turn == :player
-      player_action
-      turn = next_player turn
-    elsif turn == :computer
-      computer_action
-      turn = next_player turn   #God, this is awkward.
-    else
-      puts "turn variable in action method has fucked up"
-    end
-  end
-end
 
 def first_move
   prompt
