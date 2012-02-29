@@ -33,14 +33,14 @@ def display( board )
   puts('   a b c'.center(linewidth))
   puts
   
-  for row in 0..2
-    offset = row * 3
+  for row in 1..3
+    offset = (row - 1) * 3
     puts("#{row}: #{board[offset]}|#{board[offset + 1]}|#{board[offset + 2]}".center(linewidth))
   end
 end
 
 def action( board, turn)
-  while check_win( board ) == false    # This doesn't work because you are dumb
+  until check_win( board )
     if turn == :player
       player_action board
       turn = next_player turn
@@ -56,14 +56,28 @@ end
 def player_action( board )
   # Prompts player for action and marks spot on board
   display( board )
-  puts "Hey hey playa"
-  gets
+  puts
+  puts "Hey hey playa. What's your move?"
+  puts "Please use the form a1, b2, c3, etc."
+  prompt
+  selection = gets.chomp.scan(/\A[abc][123]/).first
+
+  if selection.nil?
+    puts "Please use the form a1, b2, c3 to choose a coordinate."
+    puts "Press enter to continue:"
+    prompt; gets
+    player_action( board )
+  else
+    board[to_index(selection)] = "x"
+  end    
 end
 
 def computer_action( board )
   # Computer's move
   display( board )
+  puts
   puts "Resistance is futile"
+  prompt
   gets
 end
 
@@ -127,6 +141,33 @@ def next_player( turn )
     puts "ERROR: Turn must be computer or player."
     return nil
   end
+end
+
+def to_index ( selection )
+  index = 0
+  case selection[0]
+  when "a"
+    index += 0
+  when "b"
+    index += 1
+  when "c"
+    index += 2
+  else
+    puts 'selection[0] is malformed'
+  end
+  
+  case selection[1]
+  when "1"
+    index += 0
+  when "2"
+    index += 3
+  when "3"
+    index += 6
+  else
+    puts 'selection[1] is malformed'
+  end
+  
+  return index
 end
 
 def prompt

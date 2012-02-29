@@ -4,16 +4,21 @@ Tic Tac Toe is the classic game in command line. This version pits the player ag
 
 **Roadmap**
 
-Playable game
-    Display board
-    Player's turn
-        Graphical select
-    Computer's turn
-        1. Never lose (block)
-            2 in a row? Block it.
-        2. Win (attack)
-            Place first
-            Prefer placing with clear line of sight to own marks
-            Traps
-                Middle
-    Win conditions
+    Playable game
+        Display board
+        Player's turn
+            Graphical select
+        Computer's turn
+            1. Never lose (block)
+                2 in a row? Block it.
+            2. Win (attack)
+                Place first
+                Prefer placing with clear line of sight to own marks
+                Traps
+                    Middle
+        Win conditions
+
+Discovered some bugs:
+
+* Win check fails for rows 2 and 3
+* Win check fails for columns B and C
