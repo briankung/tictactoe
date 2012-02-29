@@ -146,24 +146,40 @@ def defend( board )
     if add_row( board, index ) =~ x_x
       for col in 0..2
         offset = index * 3 + col
-        board[offset] = "o" if board[offset] != "x"
+        if board[offset] != "x"
+          board[offset] = "o" 
+          break
+        end
       end
+      
     elsif add_col( board, index ) =~ x_x
       for row in 0..2
         offset = index * 3 + row
-        board[offset] = "o" if board[offset] != "x"
+        if board[offset] != "x"
+          board[offset] = "o" 
+          break
+        end
       end
+      
     elsif add_fwd_diag( board ) =~ x_x
       for index in 0..2
         offset = index * 4
-        board[offset] = "o" if board[offset] != "x"
+        if board[offset] != "x"
+          board[offset] = "o" 
+          break
+        end
       end
+      
     elsif add_back_diag( board ) =~ x_x
       for index in 1..3
         offset = index * 2
-        board[offset] = "o" if board[offset] != "x"
+        if board[offset] != "x"
+          board[offset] = "o" 
+          break
+        end
       end
     end
+    
  end
 end
 
