@@ -2,6 +2,12 @@ Readme:
 
 Tic Tac Toe is the classic game in command line. This version pits the player against a perfect computer player that wins whenever possible and cannot lose.
 
+Directions:
+
+- fire up irb
+- require ttt.rb
+- use command "tictactoe" (without parentheses) to play.
+
 **Roadmap**
 
     Playable game
@@ -22,3 +28,4 @@ Discovered some bugs:
 
 * [FIXED] Win check fails for rows 2 and 3
 * [FIXED] Win check fails for columns B and C
+* Computer cheats like a whore in certain situations.
