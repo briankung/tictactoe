@@ -143,23 +143,28 @@ def defend( board )
   x_x = /x{2}/
 
   for index in 0..2
-    if add_row( board, index ) =~ xx
+    if add_row( board, index ) =~ x_x
       for col in 0..2
         offset = index * 3 + col
         board[offset] = "o" if board[offset] != "x"
       end
-    elsif add_col( board, index ) =~ xx
+    elsif add_col( board, index ) =~ x_x
       for row in 0..2
         offset = index * 3 + row
         board[offset] = "o" if board[offset] != "x"
       end
-    elsif add_fwd_diag( board ) =~ xx
-      # Magic
+    elsif add_fwd_diag( board ) =~ x_x
+      for index in 0..2
+        offset = index * 4
+        board[offset] = "o" if board[offset] != "x"
+      end
+    elsif add_back_diag( board ) =~ x_x
+      for index in 1..3
+        offset = index * 2
+        board[offset] = "o" if board[offset] != "x"
+      end
     end
-    elsif add_back_diag( board ) =~ xx
-      # Fairy magic
-    end
-  end
+ end
 end
 
 def attack( board )
