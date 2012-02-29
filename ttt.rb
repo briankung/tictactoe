@@ -1,3 +1,4 @@
+# Display a board
   # Ask who should go first
     # Set player indicator
   # Players alternate moves until win conditions met
@@ -21,8 +22,6 @@ def tictactoe
   puts "Who should go first? Type \"player\" or \"computer\""
   puts "without the quotation marks to make your choice."
 
-  action( firstmove )
-  
 end
 
 def display( board )
@@ -36,10 +35,7 @@ def display( board )
     offset = row * 3
     puts("#{row}: #{board[offset]}|#{board[offset + 1]}|#{board[offset + 2]}".center(linewidth))
   end
-  
 end
-
-  
 
 def player_action
   # Prompts player for action and marks spot on board
@@ -51,21 +47,53 @@ def computer_action
   puts "Resistance is futile"
 end
 
-def check_win
-  # Checks the board for win conditions
+def check_win board
+  # Checks the board for win conditions.
+  #
+  for index in 0..2
+    player_wins if add_row( board, index ) =~ /x{3}/ || add_col( board, index ) =~ /x{3}/
+    computer_wins if add_row( board, index ) =~ /o{3}/ || add_col( board, index ) =~ /o{3}/
+  end
+  
+  player_wins if add_fwd_diag( board ) =~ /x{3}/ || add_back_diag( board ) =~ /x{3}/
+  computer_wins if add_fwd_diag( board ) =~ /o{3}/ || add_back_diag( board ) =~ /o{3}/
 end
 
-def action turn
-  if turn == :player
-    player_action()
-  elsif turn == :computer
-    computer_action()
-  else
-    puts "Error, turn variable not set correctly."
+# String concatenations for checking win conditions
+
+def add_row( array, index )
+  array[index * 3].to_s + array[index * 3 + 1].to_s + array[index * 3 + 2].to_s
+end
+
+def add_col( array, index )
+  array[index].to_s + array[index + 3].to_s + array[index + 6].to_s
+end
+
+def add_fwd_diag( array )
+  array[0].to_s + array[4].to_s + array[8].to_s
+end
+
+def add_back_diag( array )
+  array[2].to_s + array[4].to_s + array[6].to_s
+end
+
+# Yep.
+
+def action( board, turn)
+  unless check_win board  # Psuedo-code. Fix later.
+    if turn == :player
+      player_action
+      turn = next_player turn
+    elsif turn == :computer
+      computer_action
+      turn = next_player turn   #God, this is awkward.
+    else
+      puts "turn variable in action method has fucked up"
+    end
   end
 end
 
-def firstmove
+def first_move
   prompt
   choice = gets.chomp
   
@@ -75,11 +103,11 @@ def firstmove
     choice = :computer
   else
     puts "Please enter a valid selection."
-    firstmove
+    first_move
   end
 end
 
-def next( turn )
+def next_player( turn )
   if turn == :player
     turn = :computer
   elsif turn == :computer
@@ -89,8 +117,6 @@ def next( turn )
     return nil
   end
 end
-
-# Usefuls bits and pieces
 
 def prompt
   print "> "
