@@ -2,6 +2,11 @@
 # The game itself is the tic_tac_toe function. Fire it up and
 # everything should be self explanatory.
 
+# Check_trap and all mentions of it have been commented out
+# for playing purposes. And I'm tired of this game and how
+# bad the code looks. I'm sick of using board as an
+# argument. Rawr!
+
 def tic_tac_toe
   board = []
   9.times do
@@ -158,10 +163,10 @@ def hal( board )
     attack(board)
   elsif near_win(board, :player)
     defend(board)
-  elsif check_trap(board) == [true, :computer]
-    set_trap(board)
-  elsif check_trap(board) == [true, :player]
-    block_trap(board)
+  # elsif check_trap(board) == [true, :computer]
+    # set_trap(board)
+  # elsif check_trap(board) == [true, :player]
+    # block_trap(board)
   else
     empty_spots = find_all_moves(board, :blank)
     board[empty_spots.shuffle.last] = "o"
@@ -179,31 +184,94 @@ def attack( board )
 end
 
 def check_trap( board )
-  # Returns true or false and who is trapping whom
-  # Ex. return [true, :computer] #=> Computer's advantage
+  
   all_moves       = find_all_moves(board, :all)
   computer_moves  = find_all_moves(board, :computer)
   player_moves    = find_all_moves(board, :player)
   
-  # if all_moves.length == 1 && player_moves.length == 1
-    # return[true, :player]
-  # elsif player_moves.length == 2 && computer_moves.length == 1
-    # return[true, :player]
-  # elsif all_moves.length == 0
-    # return[true, :computer]
-  # elsif player_moves.length == 1 && computer_moves.length == 1
-    # return[true, :computer]
-  # elsif player_moves.length == 1 && computer_moves.length == 1
-    
-  # end
-  
-  return false
-end
-
-def block_trap( board )
+  if all_moves.length == 1 && player_moves.length == 1
+    return[true, :player]
+  elsif player_moves.length == 2 && computer_moves.length == 1
+    return[true, :player]
+  elsif all_moves.length == 0
+    return[true, :computer]
+  elsif player_moves.length == 1 && computer_moves.length == 1
+    return[true, :computer]
+  elsif player_moves.length == 1 && computer_moves.length == 1
+    return[true, :computer]
+  elsif player_moves.length == 2 && computer_moves.length == 2
+    return[true, :computer]
+  else
+    return false
+  end
 end
 
 def set_trap( board )
+  all_moves       = find_all_moves(board, :all)
+  computer_moves  = find_all_moves(board, :computer)
+  player_moves    = find_all_moves(board, :player)
+  avail_moves     = find_all_moves(board, :blank)
+  corners         = [0, 2, 6, 8]
+  sides           = [1, 3, 5, 7]
+  center          = 4
+  
+  if all_moves.length == 0
+    starter = rand(6)
+      board[corners.shuffle.last] = "o" if starter < 3
+      board[center] = "o" if starter == 3 || starter == 4
+      board[sides.shuffle.last] = "o" if starter == 5
+  elsif computer_moves.length == 1
+# Not finished. Pick up from here.
+    # if computer in corner
+      # and if player in side
+      # or if player in corner
+      # or if player in center
+    # if computer in center
+    # if computer in side
+  elsif computer_moves.length == 2
+  else
+  end
+end
+
+def find_adjacent( location )
+  board       = (0..8).to_a
+  adjacent    = []
+  corners     = [0, 2, 6, 8]
+  sides       = [1, 3, 5, 7]
+  center      = [4]
+
+  if (location.to_a & corners).length == 1
+    
+  elsif (location.to_a & sides).length == 1
+    for x in (-1..1)
+      for y in (-1..1)
+        adjacent << location + x + 3 * y
+# Not finished. Pick up from here.
+      end
+    end
+    return (adjacent & board)
+  else
+    return board - center
+end
+
+def find_diagonal( location )
+end
+
+def find_across( location )
+end
+
+def block_trap( board )
+  all_moves       = find_all_moves(board, :all)
+  computer_moves  = find_all_moves(board, :computer)
+  player_moves    = find_all_moves(board, :player)
+  avail_moves     = find_all_moves(board, :blank)
+  corners         = [0, 2, 6, 8]
+  sides           = [1, 3, 5, 7]
+  center          = 4
+
+  # This violates DRY like crazy.
+  # This is why I need to learn to use classes. NOOB!
+  
 end
 
 # Corners - top left, top right, bottom left, bottom right.

@@ -35,3 +35,6 @@ Directions:
 * User can overwrite old inputs and rewrite the board <.<
 
 Oddly enough, random is almost good enough to pass as AI.
+
+3/1/2012 11:54:45 AM
+Added some bitching and moaning. Look for "pick up from here" or "pick up" to pick up on code.
