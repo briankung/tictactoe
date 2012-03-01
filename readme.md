@@ -23,21 +23,6 @@ Directions:
                 Traps
                     Middle
         Win conditions
-
-**Old notes to self in ttt.rb**
-
-    # Display a board
-      # Ask who should go first
-        # Set player indicator
-      # Players alternate moves until win conditions met
-        # Human: Ask for input in form a1, b2, c3, etc.
-          # Parse move input
-            # Must be two characters, /([abc][123])/i
-              # Else, throw a hissy fit
-        # Computer
-          # AI chooses a move somehow. Dammit      
-        # After every player move, check win
-          # If win, congratulate or console player
         
 **Bugs**
 
