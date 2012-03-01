@@ -1,8 +1,8 @@
 # Tic Tac Toe implemented in Ruby command line.
-# The game itself is the ttt function. Fire it up and
+# The game itself is the tic_tac_toe function. Fire it up and
 # everything should be self explanatory.
 
-def ttt
+def tic_tac_toe
   board = []
   9.times do
     board << "_"
@@ -72,112 +72,193 @@ def computer_action( board )
   display( board )
   puts
   puts "Computer: Resistance is futile"
-  prompt
+  print "Press enter:"
   gets
 end
 
 def check_win board
-  ooo = /o{3}/
-  xxx = /x{3}/
+  ooo = "ooo"
+  xxx = "xxx"
   
   for index in 0..2
-    if add_row( board, index ) =~ xxx
+    rows = add_row( board, index )
+    cols = add_col( board, index )
+
+    if rows == xxx
       return [true, "The player"]
-    elsif add_row( board, index ) =~ ooo
+    elsif rows == ooo
       return [true, "The computer"]
-    elsif add_col( board, index ) =~ xxx
+    elsif cols == xxx
       return [true, "The player"]
-    elsif add_col( board, index ) =~ ooo
+    elsif cols == ooo
       return [true, "The computer"]
     end
   end
+  
+  fwd_diag = add_fwd_diag( board )
+  back_diag = add_back_diag( board )
 
-  if add_fwd_diag( board ) =~ xxx
+  if fwd_diag == xxx
     return [true, :player]
-  elsif add_fwd_diag( board ) =~ ooo
+  elsif fwd_diag == ooo
     return [true, :computer]
-  elsif add_back_diag( board ) =~ xxx
+  elsif back_diag == xxx
     return [true, :player]
-  elsif add_back_diag( board ) =~ ooo
+  elsif back_diag == ooo
     return [true, :computer]
+  elsif board.index("_").nil?
+    return [true, "Nobody"]
   else
     return [false, false]
   end
 end
 
-# String concatenations for checking board
+# check_win helpers. Also seen in near_win?().
 
 def add_row( array, index )
-  array[index * 3].to_s + array[index * 3 + 1].to_s + array[index * 3 + 2].to_s
+  offset = index * 3
+  array[offset] + array[offset + 1] + array[offset + 2]
 end
 
 def add_col( array, index )
-  array[index].to_s + array[index + 3].to_s + array[index + 6].to_s
+  array[index] + array[index + 3] + array[index + 6]
 end
 
 def add_fwd_diag( array )
-  array[0].to_s + array[4].to_s + array[8].to_s
+  array[0] + array[4] + array[8]
 end
 
 def add_back_diag( array )
-  array[2].to_s + array[4].to_s + array[6].to_s
+  array[2] + array[4] + array[6]
 end
 
 # Computer player logic. We'll call her...HAL.
 
 def hal( board )
-  defend( board )
-  attack( board )
+
+  if near_win(board, :computer)
+    attack(board)
+  elsif near_win(board, :player)
+    defend(board)
+  elsif check_trap(board) == [true, :computer]
+    set_trap(board)
+  elsif check_trap(board) == [true, :player]
+    block_trap(board)
+  else
+    empty_spots = find_all_moves(board, :blank)
+    board[empty_spots.shuffle.last] = "o"
+  end
 end
 
 def defend( board )
-  x_x = /x{2}/
-
-  # AI is a bitch because of all the nested loops
-  
-  for index in 0..2
-    if add_row( board, index ) =~ x_x
-      for col in 0..2
-        offset = index * 3 + col
-        if board[offset] != "x"
-          board[offset] = "o" 
-          break
-        end
-      end
-      
-    elsif add_col( board, index ) =~ x_x
-      for row in 0..2
-        offset = index * 3 + row
-        if board[offset] != "x"
-          board[offset] = "o" 
-          break
-        end
-      end
-      
-    elsif add_fwd_diag( board ) =~ x_x
-      for index in 0..2
-        offset = index * 4
-        if board[offset] != "x"
-          board[offset] = "o" 
-          break
-        end
-      end
-      
-    elsif add_back_diag( board ) =~ x_x
-      for index in 1..3
-        offset = index * 2
-        if board[offset] != "x"
-          board[offset] = "o" 
-          break
-        end
-      end
-    end
-    
- end
+  plug_hole( board, :player)
 end
 
 def attack( board )
-  o_o = /o{2}/
+  plug_hole( board, :computer )
+end
+
+def check_trap( board )
+  # Returns true or false and who is trapping whom
+  # Ex. return [true, :computer] #=> Computer's advantage
+  return [false, false]
+end
+
+def block_trap( board )
+end
+
+def set_trap( board )
+end
+
+# Corners - top left, top right, bottom left, bottom right.
+# Sides - top, left, right, bottom
+
+def categorize( array )
+  hash = {
+  :corners => [ array[0], array[2], array[6], array[8] ],
+  :sides => [ array[1], array[3], array[5], array[7] ]
+  }
+end
+  
+
+def plug_hole( board, agent)
+  almost = near_win(board, agent)
+
+  if almost
+    board[ almost ] = "o"
+  end  
+end
+
+def find_all_moves( board, agent )
+  locations = []
+  copy = board.clone
+  
+  if agent == :computer
+    token = "o"
+  elsif agent == :player
+    token = "x"
+  elsif agent == :blank
+    token = "_"
+  else
+    puts "Input for find_all_moves is incorrect"
+  end
+
+  until copy.index(token).nil?
+    locations << copy.index(token)
+    copy[copy.index(token)] = " "
+  end
+
+  return locations
+end
+
+def near_win( board, agent )
+
+  if agent == :player
+    test = /x{2}|x_x/
+  elsif agent == :computer
+    test = /o{2}|o_o/
+  end
+  
+  danger_zone = 0 # Returned and used as array index
+
+  # The unless loops prevent failure when rows/cols/diags
+  # are full. Ex. "xoo"
+
+  for index in 0..2
+    rows = add_row( board, index )
+    cols = add_col( board, index )
+    x_coord = rows.index("_")
+    y_coord = cols.index("_")
+
+    if rows =~ test
+      unless x_coord.nil?
+        danger_zone = index * 3 + x_coord
+        return danger_zone
+      end
+    elsif cols =~ test
+      unless y_coord.nil?
+        danger_zone = index + y_coord * 3
+        return danger_zone
+      end
+    end
+  end
+  
+  fwd_diag = add_fwd_diag( board )
+  back_diag = add_back_diag( board )
+
+  if fwd_diag =~ test
+    unless fwd_diag.index("_").nil?
+      danger_zone = fwd_diag.index("_") * 4
+      return danger_zone
+    end
+  elsif back_diag =~ test
+    unless back_diag.index("_").nil?
+      danger_zone = (back_diag.index("_") + 1) * 2
+      return danger_zone
+    end
+  else
+    return false
+  end
 end
 
 # Bits and pieces.

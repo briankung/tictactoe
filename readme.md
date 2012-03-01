@@ -6,7 +6,7 @@ Directions:
 
 1. fire up irb
 2. require ttt.rb
-3. use command "ttt" (without parentheses) to play.
+3. use command "tic_tac_toe" (without parentheses) to play.
 
 **Roadmap**
 
@@ -24,7 +24,7 @@ Directions:
                     Middle
         Win conditions
 
-**Old notes to self in ttt.rb***
+**Old notes to self in ttt.rb**
 
     # Display a board
       # Ask who should go first
@@ -43,4 +43,10 @@ Directions:
 
 * [FIXED] Win check fails for rows 2 and 3
 * [FIXED] Win check fails for columns B and C
-* Computer cheats like a whore in certain situations.
+* [FIXED] Computer cheats like a whore in certain situations.
+* [FIXED] Also, you know...doesn't win. Legally.
+* Computer chooses spots randomly when not in immediate danger
+* Falls prey to traps
+* User can overwrite old inputs and rewrite the board <.<
+
+Oddly enough, random is almost good enough to pass as AI.
