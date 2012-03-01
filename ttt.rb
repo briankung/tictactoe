@@ -45,6 +45,21 @@ def action( board, turn)
   
   display board
   puts "#{check_win(board).last} won!"
+  puts "Play again? (yes/no)"
+  replay = gets.chomp
+  if replay =~ /\A[y|yes]\z/i
+    tic_tac_toe
+  elsif replay =~ /\A[n|no]\z/i
+    puts "Bye!"
+  else
+    puts "I didn't understand that. Here's a picture of a cat!"
+    puts
+    puts "               )\\._.,--....,'``.         "
+    puts " .b--.        /;   _.. \\   _\\  (`._ ,.  "
+    puts "`=,-,-'~~~   `----(,_..'--(,_..'`-.;.'    "
+    puts
+  end
+
 end
 
 def player_action( board )
@@ -59,9 +74,13 @@ def player_action( board )
   if selection.nil?
     puts "I didn't understand that. Press enter to try again."
     gets
-    player_action( board )
-  else
+    player_action(board)
+  elsif board[to_index(selection)] == "_"
     board[to_index(selection)] = "x"
+  else
+    puts "You can't rewrite the board!"
+    gets
+    player_action(board)
   end   
 end
 
@@ -72,7 +91,6 @@ def computer_action( board )
   display( board )
   puts
   puts "Computer: Resistance is futile"
-  print "Press enter:"
   gets
 end
 
@@ -150,6 +168,8 @@ def hal( board )
   end
 end
 
+# These are kind of extraneous.
+
 def defend( board )
   plug_hole( board, :player)
 end
@@ -161,7 +181,23 @@ end
 def check_trap( board )
   # Returns true or false and who is trapping whom
   # Ex. return [true, :computer] #=> Computer's advantage
-  return [false, false]
+  all_moves       = find_all_moves(board, :all)
+  computer_moves  = find_all_moves(board, :computer)
+  player_moves    = find_all_moves(board, :player)
+  
+  # if all_moves.length == 1 && player_moves.length == 1
+    # return[true, :player]
+  # elsif player_moves.length == 2 && computer_moves.length == 1
+    # return[true, :player]
+  # elsif all_moves.length == 0
+    # return[true, :computer]
+  # elsif player_moves.length == 1 && computer_moves.length == 1
+    # return[true, :computer]
+  # elsif player_moves.length == 1 && computer_moves.length == 1
+    
+  # end
+  
+  return false
 end
 
 def block_trap( board )
@@ -176,7 +212,8 @@ end
 def categorize( array )
   hash = {
   :corners => [ array[0], array[2], array[6], array[8] ],
-  :sides => [ array[1], array[3], array[5], array[7] ]
+  :sides => [ array[1], array[3], array[5], array[7] ],
+  :center => array[4]
   }
 end
   
@@ -199,6 +236,8 @@ def find_all_moves( board, agent )
     token = "x"
   elsif agent == :blank
     token = "_"
+  elsif agent == :all
+    return find_all_moves(board, :computer) + find_all_moves(board, :player)
   else
     puts "Input for find_all_moves is incorrect"
   end
