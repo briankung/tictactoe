@@ -216,48 +216,59 @@ def set_trap( board )
   center          = 4
   
   if all_moves.length == 0
-    starter = rand(6)
-      board[corners.shuffle.last] = "o" if starter < 3
-      board[center] = "o" if starter == 3 || starter == 4
-      board[sides.shuffle.last] = "o" if starter == 5
-  elsif computer_moves.length == 1
-# Not finished. Pick up from here.
-    # if computer in corner
-      # and if player in side
-      # or if player in corner
-      # or if player in center
-    # if computer in center
-    # if computer in side
-  elsif computer_moves.length == 2
-  else
+    starter = rand(2)
+      board[corners.shuffle.last] = "o" if starter == 0
+      board[center] = "o" if starter == 3 || starter == 1
+  elsif all_moves.length == 2 && computer_moves.length == 1
+    if (computer_moves & corners).first
+
+      if (player_moves & side).first
+        board[find_opposite(computer_moves.first)] = "o"
+      elsif (player_moves & corners).first
+        if player_moves == find_opposite(computer_moves)
+          place_any(board,corners)
+        else
+          place_any(board,center)
+        end
+      elsif player_moves.first == center
+        place_any(board, computer_moves)
+      else
+        puts "The player has failed to make a move?"
+      end
+      
+    elsif computer_moves == [center]
+    
+      if (player_moves & corners).first
+        place_any(find_opposite(player_moves))
+      elsif (player_moves & sides).first
+        place_any_except(find_opposite(player_moves))
+      else
+        puts "The player isn't in the side or in the corners."
+      end
+    
+    else
+      puts "If the computer is in a side location, I'ma be pissed."
+    end
+  # elsif computer_moves.length == 2
+  
+  # else
+    # No else, really.
+  
   end
 end
 
-def find_adjacent( location )
-  board       = (0..8).to_a
-  adjacent    = []
-  corners     = [0, 2, 6, 8]
-  sides       = [1, 3, 5, 7]
-  center      = [4]
-
-  if (location.to_a & corners).length == 1
-    
-  elsif (location.to_a & sides).length == 1
-    for x in (-1..1)
-      for y in (-1..1)
-        adjacent << location + x + 3 * y
-# Not finished. Pick up from here.
-      end
+def find_opposite( location )
+  if location.is_a? Array
+    opposites = []
+    location.each do |spot|
+      opposites.push( 0-(spot+1) )
     end
-    return (adjacent & board)
+    return opposites
+  elsif location.is_a? Fixnum
+    return 0 - (location+1)
   else
-    return board - center
-end
-
-def find_diagonal( location )
-end
-
-def find_across( location )
+    puts "Input incorrect. Need Fixnum or Array"
+  end
 end
 
 def block_trap( board )
@@ -424,4 +435,24 @@ end
 
 def prompt
   print "> "
+end
+
+def place_any_except( board, *here )
+  available = find_all_moves(board, :blank)
+  possible = []
+  here.each do |dont_moves|
+    possible || (available - dont_moves)
+  end
+  
+  board[possible.shuffle.last] = "o"
+end
+
+def place_any( board, *here )
+  available = find_all_moves(board, :blank)
+  possible = []
+  here.each do |moves|
+    possible || (available & moves)
+  end
+  
+  board[possible.shuffle.last] = "o"
 end
