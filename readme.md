@@ -5,7 +5,7 @@ Tic Tac Toe is the classic game in command line. This version pits the player ag
 Directions:
 
 1. fire up irb
-2. require ttt.rb
+2. load "ttt.rb"
 3. use command "tic_tac_toe" (without parentheses) to play.
 
 **Roadmap**

@@ -1,12 +1,3 @@
-# Tic Tac Toe implemented in Ruby command line.
-# The game itself is the tic_tac_toe function. Fire it up and
-# everything should be self explanatory.
-
-# Check_trap and all mentions of it have been commented out
-# for playing purposes. And I'm tired of this game and how
-# bad the code looks. I'm sick of using board as an
-# argument. Rawr!
-
 def tic_tac_toe
   board = []
   9.times do
