@@ -1,8 +1,7 @@
 def tic_tac_toe
-  board = []
-  9.times do
-    board << "_"
-  end
+  board = [_,_,_,
+           _,_,_,
+           _,_,_]
   
   display board
   puts
